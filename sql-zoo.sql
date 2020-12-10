@@ -1,4 +1,4 @@
--- SELECT basics
+-- SELECT basics Tutorial
 -- https://sqlzoo.net/wiki/SELECT_basics
 -- 1.
 SELECT population
@@ -89,7 +89,7 @@ WHERE name LIKE '%A%'
   AND name NOT LIKE '% %'
 
 
--- SELECT from Nobel
+-- SELECT from Nobel Tutorial
 -- https://sqlzoo.net/wiki/SELECT_from_Nobel_Tutorial
 -- 1.
 SELECT yr, subject, winner
@@ -242,4 +242,46 @@ WHERE population >= ALL(SELECT population * 3
                         WHERE y.continent = x.continent
                         and y.name <> x.name)
 
+
+-- SUM and COUNT Tutorial
+-- https://sqlzoo.net/wiki/SUM_and_COUNT
+-- 1.
+SELECT SUM(population)
+FROM world
+
+-- 2.
+SELECT DISTINCT(continent)
+FROM world
+
+-- 3.
+SELECT SUM(gdp)
+FROM world
+WHERE continent = 'Africa'
+
+-- 4.
+SELECT COUNT(area)
+FROM world
+WHERE area >= 1000000
+
+-- 5.
+SELECT SUM(population)
+FROM world
+WHERE name IN ('Estonia', 'Latvia', 'Lithuania')
+
+-- 6.
+SELECT continent, COUNT(name)
+FROM world
+GROUP BY continent
+
+-- 7.
+SELECT continent, COUNT(name)
+FROM world
+WHERE population >= 10000000
+GROUP BY continent
+
+-- 8.
+SELECT continent
+FROM world
+GROUP BY continent
+HAVING SUM(population) > 100000000
 
