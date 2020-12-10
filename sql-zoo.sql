@@ -291,7 +291,7 @@ GROUP BY continent
 HAVING SUM(population) > 100000000
 
 
--- The JOIN operation
+-- The JOIN operation Tutorial
 -- https://sqlzoo.net/wiki/The_JOIN_operation
 
 -- 1.
@@ -368,3 +368,111 @@ SELECT
 FROM game LEFT JOIN goal ON (game.id = goal.matchid)
 GROUP BY id, mdate, team1, team2
 ORDER BY mdate, matchid, team1, team2
+
+
+-- More JOIN operations
+-- https://sqlzoo.net/wiki/More_JOIN_operations
+
+-- 1.
+SELECT id, title
+FROM movie
+WHERE yr=1962
+
+-- 2.
+SELECT yr
+FROM movie
+WHERE title = 'Citizen Kane'
+
+-- 3.
+SELECT id, title, yr
+FROM movie
+WHERE title LIKE '%Star Trek%'
+ORDER BY yr
+
+-- 4.
+SELECT id
+FROM actor
+WHERE name = 'Glenn Close'
+
+-- 5.
+SELECT id
+FROM movie
+WHERE title = 'Casablanca'
+
+-- 6.
+SELECT name
+FROM actor JOIN casting ON(actor.id = casting.actorid)
+WHERE movieid=11768
+
+-- 7.
+SELECT name
+FROM actor JOIN casting ON(actor.id = casting.actorid)
+           JOIN movie ON(movieid = movie.id)
+WHERE movie.title = 'Alien'
+
+-- 8.
+SELECT title
+FROM actor JOIN casting ON(actor.id = casting.actorid)
+           JOIN movie ON(movieid = movie.id)
+WHERE actor.name = 'Harrison Ford'
+
+-- 9.
+SELECT title
+FROM actor JOIN casting ON(actor.id = casting.actorid)
+           JOIN movie ON(movieid = movie.id)
+WHERE actor.name = 'Harrison Ford'
+AND casting.ord != 1
+
+-- 10.
+SELECT movie.title, actor.name
+FROM actor JOIN casting ON(actor.id = casting.actorid)
+           JOIN movie ON(movieid = movie.id)
+WHERE yr = 1962
+AND casting.ord = 1
+
+-- 11.
+SELECT yr,COUNT(title) FROM
+  movie JOIN casting ON movie.id=movieid
+        JOIN actor   ON actorid=actor.id
+WHERE name='Rock Hudson'
+GROUP BY yr
+HAVING COUNT(title) > 2
+
+-- 12.
+SELECT title, name
+FROM casting JOIN movie ON movie.id = movieid
+             JOIN actor ON actor.id = actorid
+WHERE ord = 1
+AND movie.id IN
+	(SELECT movie.id
+  FROM movie JOIN casting ON movie.id = movieid
+	           JOIN actor ON actor.id = actorid
+  WHERE actor.name = 'Julie Andrews')
+
+-- 13.
+SELECT DISTINCT name
+FROM casting JOIN movie ON movie.id = movieid
+             JOIN actor ON actor.id = actorid
+WHERE actorid IN (
+                SELECT actorid FROM casting
+	              WHERE ord = 1
+	              GROUP BY actorid
+	              HAVING COUNT(actorid) >= 15)
+ORDER BY name
+
+-- 14.
+SELECT title, COUNT(actorid)
+FROM casting JOIN movie ON movieid = movie.id
+WHERE yr = 1978
+GROUP BY movieid, title
+ORDER BY COUNT(actorid) DESC, title
+
+-- 15.
+SELECT DISTINCT name
+FROM casting JOIN actor ON actorid = actor.id
+WHERE name != 'Art Garfunkel'
+AND movieid IN(
+	      SELECT movieid
+	      FROM movie JOIN casting ON movieid = movie.id
+	                 JOIN actor ON actorid = actor.id
+	      WHERE actor.name = 'Art Garfunkel')
