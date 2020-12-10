@@ -370,7 +370,7 @@ GROUP BY id, mdate, team1, team2
 ORDER BY mdate, matchid, team1, team2
 
 
--- More JOIN operations
+-- More JOIN operations Tutorial
 -- https://sqlzoo.net/wiki/More_JOIN_operations
 
 -- 1.
@@ -478,7 +478,7 @@ AND movieid IN(
 	      WHERE actor.name = 'Art Garfunkel')
 
 
--- Using Null
+-- Using Null Tutorial
 -- https://sqlzoo.net/wiki/Using_Null
 
 -- 1.
@@ -530,3 +530,68 @@ SELECT name,
        END
 FROM teacher
 
+
+-- Self join Tutorial
+-- https://sqlzoo.net/wiki/Self_join
+
+-- 1.
+SELECT COUNT(id)
+FROM stops
+
+-- 2.
+SELECT id
+FROM stops
+WHERE name = 'Craiglockhart'
+
+-- 3.
+SELECT id, name
+FROM stops JOIN route ON stops.id = route.stop
+WHERE num = '4'
+AND company = 'LRT'
+
+-- 4.
+SELECT company, num, COUNT(*) AS routes
+FROM route
+WHERE stop=149 OR stop=53
+GROUP BY company, num
+HAVING routes >= 2
+
+-- 5.
+SELECT a.company, a.num, a.stop, b.stop
+FROM route a JOIN route b ON (a.company = b.company AND a.num = b.num)
+WHERE a.stop = 53 AND b.stop = (SELECT id
+                              FROM stops
+                              WHERE name = 'London Road')
+
+
+-- 6.
+SELECT a.company, a.num, stopa.name, stopb.name
+FROM route a JOIN route b ON (a.company=b.company AND a.num=b.num)
+             JOIN stops stopa ON (a.stop=stopa.id)
+             JOIN stops stopb ON (b.stop=stopb.id)
+WHERE stopa.name='Craiglockhart' and stopb.name = 'London Road'
+
+-- 7.
+SELECT DISTINCT a.company, a.num  
+FROM route a, route b
+WHERE a.num = b.num
+AND (a.stop = 115 AND b.stop = 137)
+
+-- 8.
+SELECT a.company, a.num
+FROM route a
+JOIN route b ON (a.company = b.company AND a.num = b.num)
+JOIN stops stopa ON a.stop = stopa.id
+JOIN stops stopb ON b.stop = stopb.id
+WHERE stopa.name = 'Craiglockhart'
+AND stopb.name = 'Tollcross';
+
+-- 9.
+SELECT DISTINCT name, a.company, a.num
+FROM route a
+JOIN route b ON (a.company = b.company AND a.num = b.num)
+JOIN stops ON a.stop = stops.id
+WHERE b.stop = 53;
+
+-- 10.
+NOPE
